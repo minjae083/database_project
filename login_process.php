@@ -10,12 +10,16 @@ $stid = oci_parse($conn, $sql);
 oci_bind_by_name($stid, ':user_id', $user_id);
 oci_execute($stid);
 
-$row = oci_fetch_assoc($stid);
+$row = oci_fetch_array($stid, OCI_ASSOC + OCI_RETURN_NULLS);
 
-if ($row && password_verify($password, $row['PASSWORD'])) {
+$db_name = $row['NAME'];
+$db_pass = $row['PASSWORD'];
+$db_is_admin = $row['IS_ADMIN']; 
+
+if ($row && password_verify($password, $db_pass)) {
     $_SESSION['user_id'] = $user_id;
-    $_SESSION['user_name'] = $row['NAME'];
-    $_SESSION['is_admin'] = $row['IS_ADMIN'];
+    $_SESSION['user_name'] = $db_name;
+    $_SESSION['is_admin'] = $db_is_admin; 
 
     header("Location: main.php");
     exit;
@@ -25,3 +29,4 @@ if ($row && password_verify($password, $row['PASSWORD'])) {
 
 oci_free_statement($stid);
 oci_close($conn);
+?>
