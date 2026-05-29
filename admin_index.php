@@ -1,15 +1,22 @@
 <?php
 session_start();
+
+// --- 디버깅 코드 추가 ---
+echo "현재 로그인한 ID: " . $_SESSION['user_id'] . "<br>";
+echo "현재 관리자 권한 값(is_admin): " . $_SESSION['is_admin'] . "<br>";
+// ----------------------
+
 require_once 'conn.php';
 
+// 여기서 1이 아닌지 체크해서 튕겨나가는 중입니다.
 if (!isset($_SESSION['user_id']) || intval($_SESSION['is_admin']) !== 1) {
-    header("Location: main.php"); 
+    echo "관리자 권한이 없어서 튕깁니다."; // 튕기기 전에 왜 튕기는지 글씨를 띄워줌
+    // header("Location: main.php"); // 잠시 주석 처리하세요 (// 추가)
     exit;
 }
 
 oci_close($conn);  
-?>
-<!DOCTYPE html>
+?><!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
